@@ -1,13 +1,15 @@
 <?php
 
-$json = $_SERVER["QUERY_STRING"] ?? '';
+$json = isset($_GET['json']);
 
 $files = scandir("scripts/");
 
 
 unset($files[0]);
 unset($files[1]);
-unset($files[2]);
+
+$files = array_values($files);
+
 $data = [];
 
 function testFileContent($string)
@@ -28,8 +30,72 @@ function getEmailFromFileContent($string)
 }
 
 //capture the json version
-if (isset($json) && strtolower($json) == 'json') {
+if ($json) {
+
     header('Content-type: application/json');
+
+//    $count = count($files);
+//    $totalRecordPerPage = 50;
+//    $page = 1;
+//    $totalNumberOfPages = ceil($count / $totalRecordPerPage);
+//
+//    if (isset($_GET['page']) && $_GET['page']!="" && $_GET['page']) {
+//        $page = $_GET['page'];
+//    }
+//
+//    $start = ($page - 1) * $totalRecordPerPage;
+//    $end = $start + $totalRecordPerPage;
+//
+//    if($page > $totalNumberOfPages){
+//        echo json_encode(['message' => 'page does not exist']);
+//        return;
+//    }
+//
+//    for($i = $start; $i < $end; $i++){
+//
+//        $extension = @explode('.', $files[$i]);
+//
+//        switch (@$extension[1]) {
+//            case 'php':
+//                $startScript = "php";
+//                break;
+//            case 'js':
+//                $startScript = "node";
+//                break;
+//            case 'py':
+//                $startScript = "python";
+//                break;
+//            case 'dart':
+//                $startScript = "dart";
+//                break;
+//            case 'java':
+//                $startScript = "java";
+//
+//                exec("javac scripts/" . $files[$i]);
+//                break;
+//
+//            default:
+//                $startScript = "php";
+//                break;
+//        }
+//
+//        $f = @exec($startScript . " scripts/" . $files[$i]);
+//
+//
+//        $newString = str_ireplace(getEmailFromFileContent($f),' ', str_ireplace(' and email','', $f));
+//
+//        $regexReturn  = testFileContent($f);
+//
+//        $data[] = [
+//            'file' => $files[$i],
+//            'output' => htmlspecialchars(trim($newString)),
+//            'name' => str_replace('-',' ',$extension[0]),
+//            'id' => $regexReturn[1],
+//            'email' => trim(getEmailFromFileContent($f)),
+//            'language' => $regexReturn[2],
+//            'status' => $regexReturn[0],
+//        ];
+//    }
 
     foreach ($files as $file) {
 
@@ -43,7 +109,7 @@ if (isset($json) && strtolower($json) == 'json') {
                 $startScript = "node";
                 break;
             case 'py':
-                $startScript = "python";
+                $startScript = "python3";
                 break;
             case 'dart':
                 $startScript = "dart";
@@ -80,6 +146,7 @@ if (isset($json) && strtolower($json) == 'json') {
 
     echo json_encode($data);
 
+
 }else{
     if (ob_get_level() == 0) ob_start();
     ?>
@@ -97,7 +164,7 @@ if (isset($json) && strtolower($json) == 'json') {
     <div class="container-fluid">
         <nav class="navbar navbar-dark bg-dark fixed-top">
                     <span class="navbar-text">
-                        HNGi7 Team Sentry
+                        HNGi7 Team Incredible
                     </span>
             <div class="float-right text-white">
                 <small>
@@ -161,7 +228,7 @@ if (isset($json) && strtolower($json) == 'json') {
                         $startScript = "node";
                         break;
                     case 'py':
-                        $startScript = "python";
+                        $startScript = "python3";
                         break;
                     case 'dart':
                         $startScript = "dart";
